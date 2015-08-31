@@ -12,12 +12,12 @@ import utils.Util;
 
 public class Config {
 	
-	public static final char WEST   = 'w';
-	public static final char EAST   = 'e';
-	public static final char NORTH  = 'n';
-	public static final char SOUTH  = 's';
-	public static final char TOP    = 't';
-	public static final char BOTTOM = 'b';
+	public static final byte EAST  = 0;
+	public static final byte WEST  = 1;
+	public static final byte NORTH = 2;
+	public static final byte SOUTH = 3;
+	public static final byte HOVER = 4;
+	public static final byte UNDER = 5;
 	
 	public static final byte BLACK   = 0;
 	public static final byte RED     = 1;
@@ -59,10 +59,10 @@ public class Config {
 	public static final byte NUM_OF_ARITHMETICAL_OP =  5;
 	public static final byte NUM_OF_RELATIONAL_OP   =  6;
 	public static final byte NUM_OF_COLORS          = 16;
-	public static final byte NUM_OF_CONNECTORS      =  6;
+	public static final byte NUM_OF_DIRECTIONS      =  6;
 	public static final byte NUM_OF_BORDERS         =  8;
 	public static final byte NUM_OF_BLOCKS          =  5;
-	public static final byte NUM_OF_WIRE_DIRECTIONS =  4;
+	public static final byte NUM_OF_POSSIBLE_CONN   =  4;
 	
 	/* CHARSET */
 	private BufferedImage charset;
@@ -210,12 +210,12 @@ public class Config {
 			}
 			
 			// connectors
-			this.connectors = new short[NUM_OF_CONNECTORS];
-			this.component_connectors = new short[NUM_OF_CONNECTORS];
+			this.connectors = new short[NUM_OF_DIRECTIONS];
+			this.component_connectors = new short[NUM_OF_DIRECTIONS];
 			char[] directions = {
-				'w','e','n','s','t','b'	
+				'e','w','n','s','t','b'	
 			};
-			for( byte i=0; i<NUM_OF_CONNECTORS; ++i ){
+			for( byte i=0; i<NUM_OF_DIRECTIONS; ++i ){
 				this.connectors[i]           = extractProp(prop,"connector_"+directions[i]);
 				this.component_connectors[i] = extractProp(prop,"comp_conn_"+directions[i]);
 			}
@@ -223,7 +223,7 @@ public class Config {
 			// borders
 			this.component_borders = new short[NUM_OF_BORDERS];
 			String[] edges = {
-				"_w","_e","_n","_s","_w_n","_w_s","_e_n","_e_s"	
+				"_e","_w","_n","_s","_e_n","_e_s","_w_n","_w_s"
 			};
 			for( byte i=0; i<NUM_OF_BORDERS; ++i ){
 				this.component_borders[i] = extractProp(prop,"component"+edges[i]);
@@ -231,27 +231,27 @@ public class Config {
 			
 			// wires
 			this.wires = new short
-					[NUM_OF_WIRE_DIRECTIONS]
-					[NUM_OF_WIRE_DIRECTIONS]
-					[NUM_OF_WIRE_DIRECTIONS];
+					[NUM_OF_POSSIBLE_CONN]
+					[NUM_OF_POSSIBLE_CONN]
+					[NUM_OF_POSSIBLE_CONN];
 			String x = "";
 			String y = "";
 			String z = "";
-			for( byte i=0; i<NUM_OF_WIRE_DIRECTIONS; ++i ){
+			for( byte i=0; i<NUM_OF_POSSIBLE_CONN; ++i ){
 				if( i == 0 ) x = "";
-				if( i == 1 ) x = "_w";
-				if( i == 2 ) x = "_e";
-				if( i == 3 ) x = "_w_e";
-				for( byte j=0; j<NUM_OF_WIRE_DIRECTIONS; ++j ){
+				if( i == 1 ) x = "_e";
+				if( i == 2 ) x = "_w";
+				if( i == 3 ) x = "_e_w";
+				for( byte j=0; j<NUM_OF_POSSIBLE_CONN; ++j ){
 					if( j == 0 ) y = "";
 					if( j == 1 ) y = "_n";
 					if( j == 2 ) y = "_s";
 					if( j == 3 ) y = "_n_s";
-					for( byte k=0; k<NUM_OF_WIRE_DIRECTIONS; ++k ){
+					for( byte k=0; k<NUM_OF_POSSIBLE_CONN; ++k ){
 						if( k == 0 ) z = "";
-						if( k == 1 ) z = "_t";
-						if( k == 2 ) z = "_b";
-						if( k == 3 ) z = "_t_b";
+						if( k == 1 ) z = "_h";
+						if( k == 2 ) z = "_u";
+						if( k == 3 ) z = "_h_u";
 						this.wires[i][j][k] = extractProp(prop,"wire"+x+y+z);
 					}
 				}
@@ -341,55 +341,43 @@ public class Config {
 		return this.undefined;
 	}
 	
-	public short getConnector( char orientation ){
+	public short getConnector( byte orientation ){
 		byte index = getIndexForOrientation(orientation);
-		if( index > -1 && index < NUM_OF_CONNECTORS ){
+		if( index > -1 && index < NUM_OF_DIRECTIONS ){
 			return this.connectors[index];
 		}
 		return this.undefined;
 	}
-	public short getComponentConnector( char orientation ){
+	public short getComponentConnector( byte orientation ){
 		byte index = getIndexForOrientation(orientation);
-		if( index > -1 && index < NUM_OF_CONNECTORS ){
+		if( index > -1 && index < NUM_OF_DIRECTIONS ){
 			return this.component_connectors[index];
 		}
 		return this.undefined;
 	}
-	private static byte getIndexForOrientation( char orientation ){
-		if( orientation == WEST   ) return 0;
-		if( orientation == EAST   ) return 1;
-		if( orientation == NORTH  ) return 2;
-		if( orientation == SOUTH  ) return 3;
-		if( orientation == TOP    ) return 4;
-		if( orientation == BOTTOM ) return 5;
+	private static byte getIndexForOrientation( byte orientation ){
+		if( orientation == EAST  ) return 0;
+		if( orientation == WEST  ) return 1;
+		if( orientation == NORTH ) return 2;
+		if( orientation == SOUTH ) return 3;
+		if( orientation == HOVER ) return 4;
+		if( orientation == UNDER ) return 5;
 		return -1;
 	}
 	
-	public short getComponentBorder( char orientation ){
-		if( orientation == WEST  ) return this.component_borders[0];
-		if( orientation == EAST  ) return this.component_borders[1];
+	public short getComponentBorder( byte orientation ){
+		if( orientation == EAST  ) return this.component_borders[0];
+		if( orientation == WEST  ) return this.component_borders[1];
 		if( orientation == NORTH ) return this.component_borders[2];
 		if( orientation == SOUTH ) return this.component_borders[3];
 		return this.undefined;
 	}
-	public short getComponentBorder( char orien1, char orien2 ){
-		if(
-			( orien1 == WEST  && orien2 == NORTH ) ||
-			( orien1 == NORTH && orien2 == WEST  )
-		){
-			return this.component_borders[4];
-		}
-		if(
-			( orien1 == WEST  && orien2 == SOUTH ) ||
-			( orien1 == SOUTH && orien2 == WEST  )
-		){
-			return this.component_borders[5];
-		}
+	public short getComponentBorder( byte orien1, byte orien2 ){
 		if(
 			( orien1 == EAST  && orien2 == NORTH ) ||
 			( orien1 == NORTH && orien2 == EAST  )
 		){
-			return this.component_borders[6];
+			return this.component_borders[4];
 		}
 		if(
 			( orien1 == EAST  && orien2 == SOUTH ) ||
@@ -397,27 +385,39 @@ public class Config {
 		){
 			return this.component_borders[5];
 		}
+		if(
+			( orien1 == WEST  && orien2 == NORTH ) ||
+			( orien1 == NORTH && orien2 == WEST  )
+		){
+			return this.component_borders[6];
+		}
+		if(
+			( orien1 == WEST  && orien2 == SOUTH ) ||
+			( orien1 == SOUTH && orien2 == WEST  )
+		){
+			return this.component_borders[5];
+		}
 		return this.undefined;
 	}
 	
 	public short getWire(
-			boolean west,
 			boolean east,
+			boolean west,
 			boolean north,
 			boolean south,
-			boolean top,
-			boolean bottom
+			boolean hover,
+			boolean under
 	){
 		byte x = 0;
 		byte y = 0;
 		byte z = 0;
 		
-		if(west)   x += 1;
-		if(east)   x += 2;
-		if(north)  y += 1;
-		if(south)  y += 2;
-		if(top)    z += 1;
-		if(bottom) z += 2;
+		if(east)  x += 1;
+		if(west)  x += 2;
+		if(north) y += 1;
+		if(south) y += 2;
+		if(hover) z += 1;
+		if(under) z += 2;
 		
 		return this.wires[x][y][z];
 	}

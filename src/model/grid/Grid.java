@@ -1,6 +1,7 @@
 package model.grid;
 
 import java.util.HashSet;
+import java.util.Iterator;
 
 import model.Vector3;
 import model.components.Block;
@@ -27,5 +28,16 @@ public class Grid {
 			}
 		}
 		return false;
+	}
+	
+	public Block getBlockAt( Vector3 position ){
+		Iterator<Block> it = blocks.iterator();
+		while( it.hasNext() ){
+			Block block = it.next();
+			if( position.isEqual(block.getPosition()) ){
+				return block;
+			}
+		}
+		return null;
 	}
 }
