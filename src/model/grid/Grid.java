@@ -31,7 +31,7 @@ public class Grid {
 	}
 	
 	public Block getBlockAt( Vector3 position ){
-		Iterator<Block> it = blocks.iterator();
+		Iterator<Block> it = this.blocks.iterator();
 		while( it.hasNext() ){
 			Block block = it.next();
 			if( position.isEqual(block.getPosition()) ){
@@ -39,5 +39,19 @@ public class Grid {
 			}
 		}
 		return null;
+	}
+	
+	public Block[] getBlocksAt( Vector3... positions ){
+		Block[] blocks = new Block[positions.length];
+		Iterator<Block> it = this.blocks.iterator();
+		while( it.hasNext() ){
+			Block block = it.next();
+			for( byte i=0; i<positions.length; ++i ){
+				if( positions[i].isEqual(block.getPosition()) ){
+					blocks[i] = block;
+				}
+			}
+		}
+		return blocks;
 	}
 }

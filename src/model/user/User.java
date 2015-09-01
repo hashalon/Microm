@@ -10,4 +10,5 @@ public class User {
 	
 	private ArrayList<Object> cursors;
 	
+	private byte color;
 }

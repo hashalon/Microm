@@ -4,7 +4,7 @@ import java.awt.Color;
 
 public abstract class Util {
 
-	public static final Color TRANSPARENT = new Color(0,true);
+	public static final Color CLEAR = new Color(0,true);
 	
 	public static final String[] HEXA_PREFIX = {
 		"#X", "#x", "0X", "0x", "#", "&h", "0h"
@@ -31,7 +31,7 @@ public abstract class Util {
 		if( value > -1 ){
 			return new Color(value);
 		}
-		return TRANSPARENT; // we return transparent
+		return CLEAR; // we return transparent
 	}
 	
 	/**

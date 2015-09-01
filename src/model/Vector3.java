@@ -12,19 +12,34 @@ public class Vector3 {
 		y = 0;
 		z = 0;
 	}
+	/**
+	 * Create the vector with the given coordinates
+	 * */
 	public Vector3( int x, int y, int z ){
 		super();
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
+	/**
+	 * Create the vector with the coordinates of the given vector
+	 * */
 	public Vector3( Vector3 vector ){
 		super();
 		this.x = vector.x;
 		this.y = vector.y;
 		this.z = vector.z;
 	}
-
+	/**
+	 * Create the vector with the coordinates of the given vector plus the given padding
+	 * */
+	public Vector3( Vector3 origin, int x, int y, int z ){
+		this(origin);
+		this.x += x;
+		this.y += y;
+		this.z += z;
+	}
+	
 	public int getX() {
 		return x;
 	}

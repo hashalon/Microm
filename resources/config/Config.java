@@ -19,6 +19,7 @@ public class Config {
 	public static final byte HOVER = 4;
 	public static final byte UNDER = 5;
 	
+	public static final byte CLEAR   = -1;
 	public static final byte BLACK   = 0;
 	public static final byte RED     = 1;
 	public static final byte GREEN   = 2;
@@ -63,6 +64,13 @@ public class Config {
 	public static final byte NUM_OF_BORDERS         =  8;
 	public static final byte NUM_OF_BLOCKS          =  5;
 	public static final byte NUM_OF_POSSIBLE_CONN   =  4;
+	
+	public static final byte TYPE_BIT      = 1; // red
+	public static final byte TYPE_BYTE     = 2; // green
+	public static final byte TYPE_LONG     = 3; // yellow
+	public static final byte TYPE_LONG_8   = 4; // blue
+	public static final byte TYPE_LONG_64  = 5; // magenta
+	public static final byte TYPE_LONG_512 = 6; // cyan
 	
 	/* CHARSET */
 	private BufferedImage charset;
@@ -331,7 +339,7 @@ public class Config {
 		if( color > -1 && color < NUM_OF_COLORS ){
 			return this.colors[color];
 		}
-		return Util.TRANSPARENT;
+		return Util.CLEAR;
 	}
 	
 	public short getGridBlock( byte intensity ){
