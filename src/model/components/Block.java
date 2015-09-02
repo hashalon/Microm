@@ -103,6 +103,16 @@ public abstract class Block {
 	
 	public abstract boolean canConnect( byte from );
 	
-	public abstract void sendSignal   ( HashSet<Block> blocks );
-	public abstract void receiveSignal( HashSet<Block> blocks );
+	public abstract void sendSignal    ( HashSet<Block> blocks );
+	public abstract void receiveSignal ( HashSet<Block> blocks );
+	
+	protected boolean hasNotBeenUpdated( HashSet<Block> blocks ){
+		// if the block hasn't been updated
+		if( blocks.contains(this) ){
+			// we can remove it from the list to update
+			blocks.remove(this);
+			return true;
+		}
+		return false;
+	}
 }

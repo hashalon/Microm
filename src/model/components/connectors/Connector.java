@@ -10,7 +10,7 @@ import model.grid.Grid;
 
 public abstract class Connector extends Block{
 
-	private byte orientation;
+	protected byte orientation;
 	
 	protected byte outputType;
 	
@@ -19,6 +19,18 @@ public abstract class Connector extends Block{
 		this.orientation = orientation;
 	}
 
+	public Block getForwardBlock(){
+		return this.getBlockAt(this.orientation);
+	}
+	
+	public Block getBackwardBlock(){
+		return this.getBlockAt(
+			(byte) ((this.orientation & 1) == 1
+			? this.orientation-1
+			: this.orientation+1)
+		);
+	}
+	
 	@Override
 	public short getCharacter() {
 		return Main.config.getConnector(this.orientation);

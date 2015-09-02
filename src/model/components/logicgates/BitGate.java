@@ -1,20 +1,43 @@
-package model.components.wires;
+package model.components.logicgates;
 
+import java.awt.Color;
 import java.util.HashSet;
 
 import config.Config;
+import main.Main;
 import model.Vector3;
 import model.components.Block;
 import model.components.datatypes.BitBlock;
 import model.grid.Grid;
+import utils.Util;
 
-public class BitWire extends Wire implements BitBlock{
+public abstract class BitGate extends Gate implements BitBlock{
 
-	private boolean data; 
+	protected boolean data;
 	
-	public BitWire(Grid grid, Vector3 position, byte insulated) {
-		super(grid, position, insulated);
+	public BitGate(Grid grid, Vector3 position) {
+		super(grid, position);
 		this.dataType = Config.TYPE_BIT;
+	}
+
+	@Override
+	public void setData(boolean data) {
+		this.data |= data;
+	}
+
+	@Override
+	public boolean getData() {
+		return this.data;
+	}
+
+	@Override
+	public Color getForeground() {
+		return Main.config.getColor(Config.RED, Config.HIGH);
+	}
+	
+	@Override
+	public Color getBackground() {
+		return Util.CLEAR;
 	}
 
 	@Override
@@ -57,16 +80,6 @@ public class BitWire extends Wire implements BitBlock{
 				}
 			}
 		}
-	}
-
-	@Override
-	public void setData(boolean data) {
-		this.data |= data;
-	}
-
-	@Override
-	public boolean getData() {
-		return this.data;
 	}
 
 }
